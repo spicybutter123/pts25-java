@@ -32,7 +32,6 @@ public final class TransformationFixed implements Effect {
         }
         return this.pollution == pollution;
 
-
     }
 
     @Override
