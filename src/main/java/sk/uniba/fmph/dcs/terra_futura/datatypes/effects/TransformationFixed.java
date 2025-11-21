@@ -6,6 +6,16 @@ import sk.uniba.fmph.dcs.terra_futura.interfaces.Effect;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Implementácia efektu, ktory transformuje suroviny.
+ * Transformovat moze z lubovolnych surovin na lubovolne
+ * {@code pollution} hovori aku pollution dana transformacia generuje
+ * {@code check} skontroluje ci {@code List<Resource> input} je identicky
+ * ako ten s ktorym vie dana transformacia pracovat.
+ * Taktiez skontroluje ci pollution na vstupe funkcie sa rovna poluttionu,
+ * ktory tato transformacia generuje
+ *
+ **/
 public final class TransformationFixed implements Effect {
 
     private final List<Resource> from;
@@ -21,7 +31,7 @@ public final class TransformationFixed implements Effect {
     @Override
     public boolean check(final List<Resource> input, final List<Resource> output, final int pollution) {
         for (Resource r : input) {
-            if (Collections.frequency(from, r) > Collections.frequency(input, r)) {
+            if (Collections.frequency(from, r) != Collections.frequency(input, r)) {
                 return false;
             }
         }
