@@ -51,7 +51,7 @@ public final class Exchange implements Effect {
         JSONArray arrFrom = new JSONArray();
         JSONArray arrTo = new JSONArray();
 
-        for (Resource r : to) {
+        for (Resource r : from) {
             arrFrom.put(r.toString());
         }
 
