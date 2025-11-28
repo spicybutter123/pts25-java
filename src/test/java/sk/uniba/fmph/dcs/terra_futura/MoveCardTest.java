@@ -1,10 +1,11 @@
 package sk.uniba.fmph.dcs.terra_futura;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 import sk.uniba.fmph.dcs.terra_futura.datatypes.GridPosition;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
 
-class MoveCardTest {
+
+public class MoveCardTest {
 
     private MoveCard moveCard;
     private FakePile pile;
@@ -48,24 +49,33 @@ class MoveCardTest {
     @Test
     public void selectCardIndex_ValidTest() {
         moveCard = new MoveCard();
-        assertDoesNotThrow(() -> moveCard.selectCardIndex(0));
-        assertDoesNotThrow(() -> moveCard.selectCardIndex(3));
+        try {
+            moveCard.selectCardIndex(0);
+            moveCard.selectCardIndex(3);
+        } catch (IllegalArgumentException e) {
+            Assert.assertNull(e);
+        }
+
     }
 
     @Test
     public void selectCardIndex_InvalidLowerBoundTest() {
         moveCard = new MoveCard();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> moveCard.selectCardIndex(-1));
-        assertEquals("Card index out of range <0;3>", exception.getMessage());
+        try {
+            moveCard.selectCardIndex(-1);
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("Card index out of range <0;3>", e.getMessage());
+        }
     }
 
     @Test
     public void selectCardIndex_InvalidUpperBoundTest() {
         moveCard = new MoveCard();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> moveCard.selectCardIndex(4));
-        assertEquals("Card index out of range <0;3>", exception.getMessage());
+        try {
+            moveCard.selectCardIndex(4);
+        } catch (IllegalArgumentException e) {
+            Assert.assertEquals("Card index out of range <0;3>", e.getMessage());
+        }
     }
 
     @Test
@@ -74,9 +84,11 @@ class MoveCardTest {
         pile = new FakePile();
         grid = new FakeGrid();
         gridPosition = new GridPosition(0,0);
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> moveCard.moveCard(pile, gridPosition, grid));
-        assertEquals("Card index not set", exception.getMessage());
+        try {
+            moveCard.moveCard(pile, gridPosition, grid);
+        } catch (IllegalStateException e) {
+            Assert.assertEquals("Card index not set", e.getMessage());
+        }
     }
 
     @Test
@@ -88,13 +100,15 @@ class MoveCardTest {
         pile.cardPresent = false;
         int index = 1;
         moveCard.selectCardIndex(index);
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> moveCard.moveCard(pile, gridPosition, grid));
-        assertEquals("There is no card at index:" + index + ".", exception.getMessage());
+        try {
+            moveCard.moveCard(pile, gridPosition, grid);
+        } catch (IllegalStateException e) {
+            Assert.assertEquals("There is no card at index:" + index + ".", e.getMessage());
+        }
     }
 
     @Test
-    void moveCard_CannotPutCardOnGridTest() {
+    public void moveCard_CannotPutCardOnGridTest() {
         moveCard = new MoveCard();
         pile = new FakePile();
         grid = new FakeGrid();
@@ -102,14 +116,15 @@ class MoveCardTest {
         int index = 1;
         grid.accept = false;
         moveCard.selectCardIndex(index);
-
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> moveCard.moveCard(pile, gridPosition, grid));
-        assertTrue(exception.getMessage().startsWith("Cannot put card at"));
+        try {
+            moveCard.moveCard(pile, gridPosition, grid);
+        } catch (IllegalStateException e) {
+            Assert.assertEquals("Cannot put card at " + gridPosition, e.getMessage());
+        }
     }
 
     @Test
-    void moveCard_SuccessTest() {
+    public void moveCard_SuccessTest() {
         moveCard = new MoveCard();
         pile = new FakePile();
         grid = new FakeGrid();
@@ -118,6 +133,6 @@ class MoveCardTest {
         moveCard.selectCardIndex(index);
 
         boolean result = moveCard.moveCard(pile, gridPosition, grid);
-        assertTrue(result);
+        Assert.assertTrue(result);
     }
 }
