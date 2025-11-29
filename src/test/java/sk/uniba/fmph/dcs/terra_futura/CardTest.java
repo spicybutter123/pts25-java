@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 import sk.uniba.fmph.dcs.terra_futura.interfaces.Effect;
-import sk.uniba.fmph.dcs.terra_futura.datatypes.effects.ArbitraryBasic;
-import sk.uniba.fmph.dcs.terra_futura.datatypes.effects.TransformationFixed;
-import sk.uniba.fmph.dcs.terra_futura.datatypes.effects.*;
+import sk.uniba.fmph.dcs.terra_futura.effects.ArbitraryBasic;
+import sk.uniba.fmph.dcs.terra_futura.effects.TransformationFixed;
+import sk.uniba.fmph.dcs.terra_futura.effects.Exchange;
+import sk.uniba.fmph.dcs.terra_futura.effects.EffectOr;
 import sk.uniba.fmph.dcs.terra_futura.enums.Resource;
 
 import static org.junit.Assert.*;

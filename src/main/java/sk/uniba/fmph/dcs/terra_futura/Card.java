@@ -25,7 +25,8 @@ public class Card {
 
     public Card(final Optional<Effect> lowerEffect, final Optional<Effect> upperEffect, final int pollutionSpaces) {
         if (lowerEffect == null || upperEffect == null) {
-            throw new NullPointerException("Null value can't be passed to Card constructor.");
+            throw new NullPointerException(
+                    "Null value passed as Card effect. Use Optional.empty() if card has no lower/upper effect.");
         }
         this.resources = getMapWithoutResources();
         this.upperEffect = upperEffect;
