@@ -35,7 +35,7 @@ public class Card {
             neededCounts.put(resource, neededCounts.get(resource) + 1);
         }
         if (!isActive()) {
-            if (resources.stream().distinct().count() == 1 &&
+            if (resources.stream().distinct().count() == 1 && resources.contains(Resource.Pollution) &&
                     neededCounts.get(Resource.Pollution) <= this.resources.get(Resource.Pollution)) {
                 return true;
             }
