@@ -2,6 +2,8 @@ package sk.uniba.fmph.dcs.terra_futura;
 import org.junit.Assert;
 import org.junit.Test;
 import sk.uniba.fmph.dcs.terra_futura.datatypes.GridPosition;
+import sk.uniba.fmph.dcs.terra_futura.effects.EffectOr;
+import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -13,7 +15,7 @@ public class MoveCardTest {
 
     private static class FakePile extends Pile {
         boolean cardPresent = true;
-        Card testCard = new Card();
+        Card testCard = new Card(Optional.of(new EffectOr(new ArrayList<>())), Optional.of(new EffectOr(new ArrayList<>())), 0);
         Card takenCard = null;
 
         @Override
