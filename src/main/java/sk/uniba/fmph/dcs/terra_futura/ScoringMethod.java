@@ -5,11 +5,8 @@ import sk.uniba.fmph.dcs.terra_futura.enums.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class ScoringMethod {
-    private final List<Resource> requiredCombination;
     private final int pointsPerCombination;
     private Optional<Integer> calculatedTotal = Optional.empty();
     private final Map<Resource, Integer> requiredResourceCounts;
@@ -26,7 +23,6 @@ public class ScoringMethod {
             throw new IllegalArgumentException("Points per combination must be non-negative.");
         }
 
-        this.requiredCombination = List.copyOf(requiredCombination);
         this.pointsPerCombination = pointsPerCombination;
 
         Map<Resource, Integer> counts = new java.util.HashMap<>();
