@@ -20,6 +20,15 @@ public final class MoveCard {
      * @return true ak sa posun podaril a false ak nie
      */
     public static boolean moveCard(final Pile pile, final int cardIndex, final GridPosition coordinate, final Grid grid) {
+        if (pile == null) {
+            throw new NullPointerException("Pile is null");
+        }
+        if (coordinate == null) {
+            throw new NullPointerException("GridPosition is null");
+        }
+        if (grid == null) {
+            throw new NullPointerException("Grid is null");
+        }
         final int numberOfCards = 4;
         if (cardIndex < 0 || cardIndex >= numberOfCards) {
             return false;

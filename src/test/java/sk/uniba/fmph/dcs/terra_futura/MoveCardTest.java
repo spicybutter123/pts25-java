@@ -47,6 +47,42 @@ public class MoveCardTest {
     }
 
     @Test
+    public void moveCard_PileIsNullTest() {
+        pile = null;
+        grid = new FakeGrid();
+        gridPosition = new GridPosition(0, 0);
+        try {
+            MoveCard.moveCard(pile, 1, gridPosition, grid);
+        }catch (Exception e) {
+            Assert.assertEquals("Pile is null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void moveCard_GridIsNullTest() {
+        pile = new FakePile();
+        grid = null;
+        gridPosition = new GridPosition(0, 0);
+        try {
+            MoveCard.moveCard(pile, 1, gridPosition, grid);
+        }catch (Exception e) {
+            Assert.assertEquals("Grid is null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void moveCard_GridPositionIsNullTest() {
+        pile = new FakePile();
+        grid = new FakeGrid();
+        gridPosition = null;
+        try {
+            MoveCard.moveCard(pile, 1, gridPosition, grid);
+        }catch (Exception e) {
+            Assert.assertEquals("GridPosition is null", e.getMessage());
+        }
+    }
+
+    @Test
     public void moveCard_edgeIndicesValidTest() {
         pile = new FakePile();
         grid = new FakeGrid();
