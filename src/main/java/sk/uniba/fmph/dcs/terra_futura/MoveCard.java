@@ -16,7 +16,7 @@ public class MoveCard {
      * @param grid samotny grid
      * @return true ak sa posun podaril a false ak nie
      */
-    public boolean moveCard(final Pile pile, final int cardIndex, final GridPosition coordinate, final Grid grid) {
+    public static boolean moveCard(final Pile pile, final int cardIndex, final GridPosition coordinate, final Grid grid) {
         final int numberOfCards = 4;
         if (cardIndex < 0 || cardIndex >= numberOfCards) {
             return false;
