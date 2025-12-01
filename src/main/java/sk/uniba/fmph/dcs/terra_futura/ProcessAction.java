@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.AbstractMap.SimpleEntry;
 
+import static sk.uniba.fmph.dcs.terra_futura.ProcessActionUtils.*;
+
 /**
  * Overí, či sa daná akcia (aktivácia karty) dá vykonať
  * a vykoná ju. Ak sa niečo nedá vykonať, vráti false.
@@ -24,7 +26,7 @@ public final class ProcessAction {
         // Overenie, že karta existuje.
         final Optional<Card> cardOpt = grid.getCard(cardPosition);
         if (cardOpt.isEmpty()) {
-            throw new IllegalArgumentException("Card not found at position: " + cardPosition);
+            return false;
         }
         final Card card = cardOpt.get();
 
@@ -32,42 +34,17 @@ public final class ProcessAction {
             return false;
         }
 
-        removeResources(grid, inputs);
+        boolean wasRemoveValid = removeResources(grid, inputs);
+        if (!wasRemoveValid) {
+            return false;
+        }
         card.putResources(outputs);
-        placePollution(grid, pollution);
+        boolean wasPollutionValid = placePollution(grid, pollution);
+        if (!wasPollutionValid) {
+            return false;
+        }
         grid.setActivated(cardPosition);
 
         return true;
-    }
-
-    /** Odobranie vstupných zdrojov. */
-    private static void removeResources(Grid grid, List<SimpleEntry<Resource, GridPosition>> inputs) {
-        for (final SimpleEntry<Resource, GridPosition> entry : inputs) {
-            Resource resource = entry.getKey();
-            GridPosition gridPosition = entry.getValue();
-
-            Optional<Card> resourceCardOpt = grid.getCard(gridPosition);
-            if (resourceCardOpt.isEmpty()) {
-                throw new IllegalArgumentException("Card not found at position: " + gridPosition);
-            }
-            Card resourceCard = resourceCardOpt.get();
-
-            resourceCard.getResources(List.of(resource));
-        }
-    }
-
-    /** Uloženie pollution. */
-    private static void placePollution(
-            final Grid grid,
-            final List<GridPosition> pollutionPositions
-    ) {
-        for (final GridPosition position : pollutionPositions) {
-            Optional<Card> pollutionCardOpt = grid.getCard(position);
-            if (pollutionCardOpt.isEmpty()) {
-                throw new IllegalArgumentException("Card not found at position: " + position);
-            }
-            Card pollutionCard = pollutionCardOpt.get();
-            pollutionCard.putResources(List.of(Resource.Pollution));
-        }
     }
 }
