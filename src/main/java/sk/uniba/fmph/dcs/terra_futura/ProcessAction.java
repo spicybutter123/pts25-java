@@ -11,12 +11,10 @@ import java.util.AbstractMap.SimpleEntry;
  * Overí, či sa daná akcia (aktivácia karty) dá vykonať
  * a vykoná ju. Ak sa niečo nedá vykonať, vráti false.
  * Bez podpory Assistance.
- **/
+ */
 public final class ProcessAction {
 
-    private ProcessAction() {}
-
-    public static boolean activateCard(
+    public static boolean activateCard (
             final GridPosition cardPosition,
             final Grid grid,
             final List<SimpleEntry<Resource, GridPosition>> inputs,
@@ -25,83 +23,50 @@ public final class ProcessAction {
     ) {
         // Overenie, že karta existuje.
         final Optional<Card> cardOpt = grid.getCard(cardPosition);
-        if (cardOpt.isEmpty()) { return false; }
+        if (cardOpt.isEmpty()) {
+            throw new IllegalArgumentException("Card not found at position: " + cardPosition);
+        }
         final Card card = cardOpt.get();
 
-        if (!checkInputs(grid, inputs)) { return false; }
-        if (!checkCardEffects(card, inputs, outputs, pollution.size())) { return false; }
-        if (!card.canPutResources(outputs)) { return false; }
-        if (!checkPollution(grid, pollution)) { return false; }
-
-        // Odobrať vstupné zdroje.
-        for (final SimpleEntry<Resource, GridPosition> input : inputs) {
-            final Card inputCard = grid.getCard(input.getValue()).orElseThrow();
-            inputCard.getResources(List.of(input.getKey()));
+        if (!card.canPutResources(outputs)) {
+            return false;
         }
 
-        // Pridať výstupy na kartu.
+        removeResources(grid, inputs);
         card.putResources(outputs);
-
-        // Pridať pollution na dané karty.
         placePollution(grid, pollution);
-
-        // Označiť kartu ako aktivovanú.
         grid.setActivated(cardPosition);
 
         return true;
     }
 
-    /** Overenie vstupov. **/
-    private static boolean checkInputs(
-            final Grid grid,
-            final List<SimpleEntry<Resource, GridPosition>> inputs
-    ) {
-        for (final SimpleEntry<Resource, GridPosition> input : inputs) {
-            final Optional<Card> inputCardOpt = grid.getCard(input.getValue());
-            if (inputCardOpt.isEmpty()) { return false; }
-            final Card inputCard = inputCardOpt.get();
+    /** Odobranie vstupných zdrojov. */
+    private static void removeResources(Grid grid, List<SimpleEntry<Resource, GridPosition>> inputs) {
+        for (final SimpleEntry<Resource, GridPosition> entry : inputs) {
+            Resource resource = entry.getKey();
+            GridPosition gridPosition = entry.getValue();
 
-            if (!inputCard.canGetResources(List.of(input.getKey()))) return false;
+            Optional<Card> resourceCardOpt = grid.getCard(gridPosition);
+            if (resourceCardOpt.isEmpty()) {
+                throw new IllegalArgumentException("Card not found at position: " + gridPosition);
+            }
+            Card resourceCard = resourceCardOpt.get();
+
+            resourceCard.getResources(List.of(resource));
         }
-        return true;
     }
 
-    /** Overenie horného a dolného efektu karty. **/
-    private static boolean checkCardEffects(
-            final Card card,
-            final List<SimpleEntry<Resource, GridPosition>> inputs,
-            final List<Resource> outputs,
-            int pollutionCount
-    ) {
-        final List<Resource> inputResources = inputs.stream()
-                                                    .map(SimpleEntry::getKey)
-                                                    .toList();
-        return card.checkUpper(inputResources, outputs, pollutionCount)
-                || card.checkLower(inputResources, outputs, pollutionCount);
-    }
-
-    /** Overenie pollution. **/
-    private static boolean checkPollution(
-            final Grid grid,
-            final List<GridPosition> pollutionPositions
-    ) {
-        for (final GridPosition position : pollutionPositions) {
-            final Optional<Card> pollutionCardOpt = grid.getCard(position);
-            if (pollutionCardOpt.isEmpty()) { return false; }
-            final Card pollutionCard = pollutionCardOpt.get();
-
-            if (!pollutionCard.canPutResources(List.of(Resource.Pollution))) return false;
-        }
-        return true;
-    }
-
-    /** Uloženie pollution. **/
+    /** Uloženie pollution. */
     private static void placePollution(
             final Grid grid,
             final List<GridPosition> pollutionPositions
     ) {
         for (final GridPosition position : pollutionPositions) {
-            final Card pollutionCard = grid.getCard(position).orElseThrow();
+            Optional<Card> pollutionCardOpt = grid.getCard(position);
+            if (pollutionCardOpt.isEmpty()) {
+                throw new IllegalArgumentException("Card not found at position: " + position);
+            }
+            Card pollutionCard = pollutionCardOpt.get();
             pollutionCard.putResources(List.of(Resource.Pollution));
         }
     }
