@@ -17,7 +17,7 @@ public final class MoveCard {
      * @param cardIndex musi byt v rozsahu <0;3>
      * @param coordinate musi byt validny na vlozenie karty do gridu, to riesi grid
      * @param grid samotny grid
-     * @return true ak sa posun podaril a false ak nie
+     * @return true ak sa posun podaril a false ak nie alebo vinimku ak je nejaky argument null
      */
     public static boolean moveCard(final Pile pile, final int cardIndex, final GridPosition coordinate, final Grid grid) {
         if (pile == null) {
