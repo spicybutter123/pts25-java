@@ -147,6 +147,10 @@ public class Card {
         json.put("pollutionSpaces", pollutionSpaces);
         return json.toString();
     }
+    
+    public boolean isClear() {
+        return this.resources.get(Resource.Pollution) <= pollutionSpaces;
+    }
 
     private static void putOptionalEffectToJSON(JSONObject json, String key, Optional<Effect> effect) {
         if (effect.isPresent()) {
@@ -162,9 +166,5 @@ public class Card {
             result.put(resource, 0);
         }
         return result;
-    }
-
-    private boolean isClear() {
-        return this.resources.get(Resource.Pollution) <= pollutionSpaces;
     }
 }
