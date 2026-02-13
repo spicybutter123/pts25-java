@@ -6,8 +6,10 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.Map;
 import sk.uniba.fmph.dcs.terra_futura.enums.Deck;
 import sk.uniba.fmph.dcs.terra_futura.enums.Resource;
+import sk.uniba.fmph.dcs.terra_futura.enums.GameState;
 
 public interface TerraFuturaInterface {
     boolean takeCard(int playerId, CardSource source, GridPosition destination);
@@ -26,4 +28,8 @@ public interface TerraFuturaInterface {
     boolean selectActivationPattern(int playerId, int card);
 
     boolean selectScoring(int playerId, int card);
+
+    GameState getGameState();
+
+    Map<Integer, Integer> getFinalScores();
 }
