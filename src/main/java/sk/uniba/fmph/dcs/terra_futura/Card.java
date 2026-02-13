@@ -12,6 +12,8 @@ import sk.uniba.fmph.dcs.terra_futura.interfaces.Effect;
 
 import org.json.JSONObject;
 
+import sk.uniba.fmph.dcs.terra_futura.interfaces.Rewardable;
+
 /**
  * Reprezentacia karty. Kazda karta ma nejake efekty (spodny, horny, alebo oba)
  * a volne miesta pre pollutions.
@@ -20,7 +22,7 @@ import org.json.JSONObject;
  * podla pravidiel hry.
  *
  **/
-public class Card {
+public class Card implements Rewardable {
     private final Map<Resource, Integer> resources;
     private final int pollutionSpaces;
     private final Optional<Effect> upperEffect;
