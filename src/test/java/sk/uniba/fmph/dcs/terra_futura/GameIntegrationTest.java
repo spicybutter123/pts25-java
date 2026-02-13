@@ -42,7 +42,7 @@ public class GameIntegrationTest {
         List<ScoringMethod> scorings = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
-            patterns.add(Collections.singletonList(new GridPosition(0, 0))); /
+            patterns.add(Collections.singletonList(new GridPosition(0, 0)));
             scorings.add(new ScoringMethod(Collections.singletonList(Resource.Money), 1));
         }
 
