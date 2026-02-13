@@ -2,88 +2,72 @@ package sk.uniba.fmph.dcs.terra_futura;
 
 import sk.uniba.fmph.dcs.terra_futura.enums.Resource;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class ScoringMethod {
-    private final int pointsPerCombination;
-    private Optional<Integer> calculatedTotal = Optional.empty();
-    private final Map<Resource, Integer> requiredResourceCounts;
 
-    /**
-     * @param requiredCombination - required combination of resources for which you get points
-     * @param pointsPerCombination - how many points do you get per combination
-     */
-    public ScoringMethod(final List<Resource> requiredCombination, final int pointsPerCombination) {
-        if (requiredCombination == null || requiredCombination.isEmpty()) {
-            throw new IllegalArgumentException("Required combination cannot be null or empty.");
+    private final Map<Resource, Integer> requirements = new HashMap<>();
+    private final int rewardPoints;
+    private Integer finalScore = null;
+
+    public ScoringMethod(List<Resource> requiredResources, int points) {
+        if (requiredResources == null || requiredResources.isEmpty()) {
+            throw new IllegalArgumentException("List of required resources cannot be empty.");
         }
-        if (pointsPerCombination < 0) {
-            throw new IllegalArgumentException("Points per combination must be non-negative.");
+        if (points < 0) {
+            throw new IllegalArgumentException("Points must be non-negative.");
         }
 
-        this.pointsPerCombination = pointsPerCombination;
-
-        Map<Resource, Integer> counts = new java.util.HashMap<>();
-        for (Resource resource : requiredCombination) {
-            counts.put(resource, counts.getOrDefault(resource, 0) + 1);
+        this.rewardPoints = points;
+        for (Resource r : requiredResources) {
+            requirements.put(r, requirements.getOrDefault(r, 0) + 1);
         }
-        this.requiredResourceCounts = counts;
     }
 
-    /**
-     * calculate how many points you get from all the resources at the end.
-     *
-     * @param playerResources - total resources at the end
-     */
-    public void selectThisMethodAndCalculate(final List<Resource> playerResources) {
-        if (playerResources == null || playerResources.isEmpty()) {
-            this.calculatedTotal = Optional.of(0);
+    public void selectThisMethodAndCalculate(List<Resource> resources) {
+        if (resources == null) {
+            this.finalScore = 0;
             return;
         }
 
-        Map<Resource, Integer> playerResourceCounts = new java.util.HashMap<>();
-        for (Resource resource : playerResources) {
-            playerResourceCounts.put(resource, playerResourceCounts.getOrDefault(resource, 0) + 1);
+        Map<Resource, Integer> available = new HashMap<>();
+        for (Resource r : resources) {
+            available.put(r, available.getOrDefault(r, 0) + 1);
         }
 
-        int possibleCombinations = Integer.MAX_VALUE;
-        for (Map.Entry<Resource, Integer> requiredEntry : requiredResourceCounts.entrySet()) {
-            Resource resourceType = requiredEntry.getKey();
-            int requiredCount = requiredEntry.getValue();
-            int playerCount = playerResourceCounts.getOrDefault(resourceType, 0);
-            if (playerCount == 0 || playerCount < requiredCount) {
-                possibleCombinations = 0;
+        int maxSets = Integer.MAX_VALUE;
+
+        for (Map.Entry<Resource, Integer> entry : requirements.entrySet()) {
+            Resource res = entry.getKey();
+            int needed = entry.getValue();
+            int has = available.getOrDefault(res, 0);
+
+            if (has < needed) {
+                maxSets = 0;
                 break;
             }
-            int combinationsForThisResource = playerCount / requiredCount;
-            possibleCombinations = Math.min(possibleCombinations, combinationsForThisResource);
+
+            int sets = has / needed;
+            if (sets < maxSets) {
+                maxSets = sets;
+            }
         }
 
-        int totalScore = possibleCombinations * pointsPerCombination;
-        this.calculatedTotal = Optional.of(totalScore);
+        if (maxSets == Integer.MAX_VALUE) {
+            maxSets = 0;
+        }
+
+        this.finalScore = maxSets * rewardPoints;
     }
 
-
-
-    /**
-     * returns a string representation of the final calculated score, or N/A if not calculated.
-     *
-     * @return the final calculated score as a String, or "not calculated".
-     */
-    public String state() {
-        return calculatedTotal.map(Object::toString).orElse("not calculated");
-    }
-
-    /**
-     * returns the final calculated score wrapped in an Optional.
-     * The Optional will be empty if the score has not been calculated yet.
-     *
-     * @return an Optional containing the final calculated score, or an empty Optional.
-     */
     public Optional<Integer> getFinalPoints() {
-        return calculatedTotal;
+        return Optional.ofNullable(finalScore);
     }
 
+    public String state() {
+        return finalScore != null ? finalScore.toString() : "not calculated";
+    }
 }
